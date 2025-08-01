@@ -34,20 +34,16 @@ After installation, configure the plugin:
    - **API Key**: Your Duitku API key
    - **Environment**: Choose Sandbox (testing) or Production (live)
    - **Development URL**: (Optional) Your ngrok/tunnel URL for local development
-   - **Transaction End Status**: Order status for successful payments
-   - **Transaction Failed Status**: Order status for failed payments
 
 ## Supported Payment Methods
 
-For a complete and up-to-date list of supported payment methods, refer to the [Duitku POP API documentation](https://docs.duitku.com/pop/id/#payment-method).
+For a complete list of supported payment methods, refer to the [Duitku POP API documentation](https://docs.duitku.com/pop/id/#payment-method).
 
 ## Testing
 
-1. Install the package on a development site
-2. Configure test credentials from Duitku sandbox
-3. Test payment flow with different payment methods
-4. Monitor `duitku.log` for detailed execution traces
-5. Verify callback handling with webhook testing tools
+1. Configure test credentials from Duitku sandbox
+2. Test payment flow with different payment methods
+3. Monitor `duitku.log` for execution traces
 
 ## Troubleshooting
 
@@ -55,41 +51,26 @@ For a complete and up-to-date list of supported payment methods, refer to the [D
 
 - **Payment method not showing?**
 
-  - Check file permissions and JoomShopping configuration
-  - Verify the plugin is installed and enabled
+  - Verify the plugin files are properly installed
   - Check `duitku.log` for installation errors
 
 - **Callback not working?**
 
   - Ensure your server is accessible from the internet
-  - Check `duitku.log` for callback reception logs
-  - Verify callback URL configuration in development environment
+  - Check `duitku.log` for callback logs
 
-- **Installation fails?**
-
-  - Ensure JoomShopping component is installed first
-  - Check database permissions for payment method creation
-  - Review installation logs in Joomla
-
-- **Payment amount mismatch errors?**
-  - The plugin automatically handles floating point precision issues
-  - Check `duitku.log` for item detail calculations and adjustments
-  - Verify order total calculations in JShopping
+- **Payment amount issues?**
+  - Check `duitku.log` for calculation details
+  - Verify order totals in JoomShopping
 
 ### Logging
 
-All plugin activity is logged to `components/com_jshopping/log/duitku.log` with detailed information:
+All plugin activity is logged to `components/com_jshopping/log/duitku.log` with information about:
 
 - Payment processing steps
 - API communication
 - Callback handling
 - Error conditions
-- Item detail calculations
-
-**Viewing Logs:**
-
-- **Admin Interface**: Go to `administrator/index.php?option=com_jshopping&controller=logs` to view logs through JShopping admin
-- **File System**: Direct access at `components/com_jshopping/log/duitku.log`
 
 ## Support
 
@@ -99,14 +80,4 @@ All plugin activity is logged to `components/com_jshopping/log/duitku.log` with 
 
 ## License
 
-GNU General Public License version 2 or later
-
-## Changelog
-
-### Version 1.0.0
-
-- Initial release with Duitku POP API integration
-- Support for multiple payment methods
-- Automatic payment method creation during installation
-- Comprehensive logging and error handling
-- Production and sandbox environment support
+GNU General Public License version 2 or later - See LICENSE.md

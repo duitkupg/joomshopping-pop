@@ -58,7 +58,7 @@ class PlgSystemDuitkuInstallerScript
             $query = "INSERT INTO `#__jshopping_payment_method` 
                 (`payment_code`, `payment_class`, `scriptname`, `payment_publish`, `payment_ordering`, `payment_type`, `price`, `price_type`, `tax_id`, `show_descr_in_email`, `name_en-GB`, `name_de-DE`) 
                 VALUES 
-                ('DUITKU', 'pm_duitku', 'pm_duitku', 0, 0, 2, 0.00, 1, 1, 0, 'Duitku Payment Gateway', 'Duitku Payment Gateway')";
+                ('DUITKU', 'pm_duitku', 'pm_duitku', 0, 0, 2, 0.00, 1, 1, 0, 'Duitku', 'Duitku')";
 
             $db->setQuery($query);
             $db->execute();

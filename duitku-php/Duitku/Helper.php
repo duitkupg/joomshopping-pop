@@ -137,7 +137,6 @@ class DuitkuHelper
     public static function buildItemDetails($order)
     {
         $itemDetails = array();
-
         $db = Factory::getDbo();
         $query = "SELECT * FROM `#__jshopping_order_item` WHERE `order_id` = " . (int)$order->order_id;
         $db->setQuery($query);
@@ -152,19 +151,19 @@ class DuitkuHelper
                 $itemDetails[] = array(
                     'name' => $item->product_name ?? 'Product',
                     'quantity' => $itemQuantity,
-                    'price' => (int)round($itemPrice) // IDR doesn't use cents, send as whole number
+                    'price' => (int)ceil($itemPrice)
                 );
             }
         }
 
-        // Add shipping if present
+        // Shipping
         if (isset($order->order_shipping) && $order->order_shipping > 0) {
             $shippingAmount = (float)$order->order_shipping;
 
             $itemDetails[] = array(
                 'name' => 'Shipping',
                 'quantity' => 1,
-                'price' => (int)round($shippingAmount) // IDR doesn't use cents
+                'price' => (int)ceil($shippingAmount)
             );
         }
 
@@ -174,8 +173,7 @@ class DuitkuHelper
             $calculatedTotal += $item['price'] * $item['quantity'];
         }
 
-        // Order total as whole number (IDR doesn't use cents)
-        $orderTotalWhole = (int)round($order->order_total);
+        $orderTotalWhole = (int)ceil($order->order_total);
 
         // Check if there's a discrepancy and adjust
         if ($calculatedTotal !== $orderTotalWhole) {
