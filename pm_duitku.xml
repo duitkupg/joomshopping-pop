@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.0" type="plugin" group="jshoppingadmin" method="upgrade">
-    <name>Duitku Payment Plugin for JoomShopping</name>
+<extension version="1.0" type="file" method="upgrade">
+    <name>Duitku Payment Gateway for JoomShopping</name>
     <version>1.0.0</version>
     <creationDate>July 2025</creationDate>
     <author>Kharisma Catur Mandala</author>
@@ -10,13 +10,11 @@
     <license>GNU General Public License version 2 or later</license>
     <description>Duitku Payment Gateway integration for JoomShopping with automatic installation.</description>
 
-    <dependencies>
-        <dependency type="platform" name="joomla" operator=">=" version="5.0"/>
-    </dependencies>
-    
     <scriptfile>install.php</scriptfile>
-    <files>
-        <folder>install</folder>
-    </files>
+    <fileset>
+        <files>
+            <folder>install</folder>
+        </files>
+    </fileset>
     
 </extension>
