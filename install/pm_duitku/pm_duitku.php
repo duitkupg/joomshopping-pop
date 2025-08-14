@@ -47,6 +47,8 @@ class pm_duitku extends PaymentRoot
                 return FALSE;
             }
 
+            Helper::saveToLog("duitku.log", "INFO: Callback Body: " . $notification->toArray());
+
             if ($order) {
                 if ($notification->isSuccess()) {
                     Helper::saveToLog("duitku.log", "INFO: Payment SUCCESS for order ID: " . $order->order_id);
@@ -99,14 +101,14 @@ class pm_duitku extends PaymentRoot
             }
             Helper::saveToLog("duitku.log", "INFO: Request Headers: " . print_r($headers, true));
             Helper::saveToLog("duitku.log", "INFO: Request Body: " . print_r($params, true));
-            Helper::saveToLog("duitku.log", "INFO: Creating Duitku Invoice...");
+            Helper::saveToLog("duitku.log", "INFO: Sending request to Duitku POP API...");
             
-            $redirUrl = DuitkuPop::createInvoice($apiUrl, $params, $headers);
-            Helper::saveToLog("duitku.log", "INFO: Duitku Invoice created successfully, redirecting to " . $redirUrl);
-            header("Location: " . $redirUrl);
+            $result = DuitkuPop::createInvoice($apiUrl, $params, $headers);
+            Helper::saveToLog("duitku.log", "INFO: Response Body: " . print_r($result, true));
+            header("Location: " . $result->paymentUrl);
             exit();
         } catch (Exception $e) {
-            Helper::saveToLog("duitku.log", "ERROR: Duitku Invoice creation failed - " . $e->getMessage());
+            Helper::saveToLog("duitku.log", "ERROR: Request failed - " . $e->getMessage());
             echo "Payment processing error: " . $e->getMessage();
             return;
         }

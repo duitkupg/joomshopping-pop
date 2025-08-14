@@ -33,7 +33,7 @@ if (is_dir($old_dir)) {
     if (is_dir($new_dir)) {
         try {
             $paymentTable = JSFactory::getTable('paymentMethod');
-            $paymentTable->loadFromClass('pm_duitku');
+            $paymentTable->loadFromClass('pm_duitku'); // IGNORE (Red underline is linter error)
             if ($paymentTable->payment_id) {
                 $app->enqueueMessage('Duitku payment method already exists!', 'warning');
             } else {
@@ -59,7 +59,7 @@ if (is_dir($old_dir)) {
                         'transaction_failed_status' => '1'
                     ];
 
-                    $paymentTable->setConfigs($configs);
+                    $paymentTable->setConfigs($configs); // IGNORE (Red underline is linter error)
                     $paymentTable->store();
                     $app->enqueueMessage('Duitku auto-install success.', 'success');
                 } else {

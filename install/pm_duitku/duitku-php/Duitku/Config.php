@@ -11,22 +11,4 @@ class DuitkuConfig
         }
         return 'https://api-prod.duitku.com/api/merchant/createInvoice';
     }
-
-    public static function isProduction($environment)
-    {
-        return $environment === 'production';
-    }
-
-    public static function getEnvironments()
-    {
-        return [
-            'sandbox' => 'Sandbox',
-            'production' => 'Production'
-        ];
-    }
-
-    public static function validateEnvironment($environment)
-    {
-        return in_array($environment, ['sandbox', 'production']) ? $environment : 'sandbox';
-    }
 }

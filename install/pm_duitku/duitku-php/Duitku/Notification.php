@@ -1,6 +1,4 @@
 <?php
-use Joomla\Component\Jshopping\Site\Helper\Helper;
-
 class DuitkuNotification
 {
     public $merchantCode;
@@ -58,19 +56,6 @@ class DuitkuNotification
         return $this->resultCode === '02';
     }
 
-    public function getTransactionStatus()
-    {
-        if ($this->isSuccess()) {
-            return 'success';
-        } elseif ($this->isFailed()) {
-            return 'failed';
-        } elseif ($this->isPending()) {
-            return 'pending';
-        } else {
-            return 'unknown';
-        }
-    }
-
     public function validateSignature($merchantCode, $apiKey)
     {
         if (empty($this->signature)) {
@@ -84,20 +69,21 @@ class DuitkuNotification
                 $apiKey
         );
 
-        if (!hash_equals($expectedSignature, $this->signature)) {
-            Helper::saveToLog("duitku.log", "WARNING: Signature validation failed");
-        }
         return hash_equals($expectedSignature, $this->signature);
     }
 
     public function validateFields()
-    {
+    {   
+        $fields = "";
         $required = ['resultCode', 'merchantOrderId', 'reference'];
 
         foreach ($required as $field) {
             if (empty($this->$field)) {
-                throw new Exception("Missing required notification field: $field");
+                $fields .= "$field, ";
             }
+        }
+        if (!empty($fields)) {
+            throw new Exception("Missing required notification field(s): " . rtrim($fields, ", "));
         }
     }
 
