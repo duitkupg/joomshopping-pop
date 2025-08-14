@@ -29,5 +29,6 @@ if (!function_exists('json_decode')) {
 require_once('Duitku/ApiRequestor.php');
 require_once('Duitku/Config.php');
 require_once('Duitku/DuitkuPop.php');
-require_once('Duitku/Notification.php');
+require_once('Duitku/Header.php');
 require_once('Duitku/Helper.php');
+require_once('Duitku/Notification.php');

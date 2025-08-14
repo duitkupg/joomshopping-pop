@@ -1,22 +1,3 @@
-# Build and package files
 *.zip
-package.sh
-
-# Development files
-.DS_Store
-*.log
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# OS generated files
-Thumbs.db
-desktop.ini
+*.sh
+TODO

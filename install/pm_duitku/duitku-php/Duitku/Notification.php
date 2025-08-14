@@ -1,42 +1,41 @@
 <?php
-class Duitku_Notification
-{
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
-    public $resultCode;
+class DuitkuNotification
+{
+    public $merchantCode;
+    public $amount; 
     public $merchantOrderId;
-    public $reference;
+    public $productDetail;
+    public $additionalParam;
+    public $resultCode;
     public $paymentCode;
     public $merchantUserId;
-    public $amount;
-    public $productDetail;
-    public $publisherOrderId;
-    public $settlementDate;
-    public $vaNumber;
-    public $sourceAccount;
+    public $reference;
     public $signature;
-    public $additionalParam;
-    public $rawData;
+    public $publisherOrderId;
+    public $spUserHash;
+    public $settlementDate;
+    public $issuerCode;
 
     public function __construct()
     {
-        $this->rawData = array_merge($_GET, $_POST);
-
-        $this->resultCode = $this->getValue('resultCode');
+        $this->merchantCode = $this->getValue('merchantCode');
+        $this->amount = $this->getValue('amount');
         $this->merchantOrderId = $this->getValue('merchantOrderId');
-        $this->reference = $this->getValue('reference');
+        $this->productDetail = $this->getValue('productDetail');
+        $this->additionalParam = $this->getValue('additionalParam');
+        $this->resultCode = $this->getValue('resultCode');
         $this->paymentCode = $this->getValue('paymentCode');
         $this->merchantUserId = $this->getValue('merchantUserId');
-        $this->amount = $this->getValue('amount');
-        $this->productDetail = $this->getValue('productDetail');
+        $this->reference = $this->getValue('reference');
         $this->signature = $this->getValue('signature');
-
         $this->publisherOrderId = $this->getValue('publisherOrderId');
+        $this->spUserHash = $this->getValue('spUserHash');
         $this->settlementDate = $this->getValue('settlementDate');
-        $this->vaNumber = $this->getValue('vaNumber');
-        $this->sourceAccount = $this->getValue('sourceAccount');
-        $this->additionalParam = $this->getValue('additionalParam');
+        $this->issuerCode = $this->getValue('issuerCode');
 
-        $this->validateRequiredFields();
+        $this->validateFields();
     }
 
     private function getValue($key)
@@ -48,15 +47,15 @@ class Duitku_Notification
     {
         return $this->resultCode === '00';
     }
+    
+    public function isPending()
+    {
+        return $this->resultCode === '01';
+    }
 
     public function isFailed()
     {
-        return !empty($this->resultCode) && $this->resultCode !== '00';
-    }
-
-    public function isPending()
-    {
-        return empty($this->resultCode);
+        return $this->resultCode === '02';
     }
 
     public function getTransactionStatus()
@@ -65,12 +64,14 @@ class Duitku_Notification
             return 'success';
         } elseif ($this->isFailed()) {
             return 'failed';
-        } else {
+        } elseif ($this->isPending()) {
             return 'pending';
+        } else {
+            return 'unknown';
         }
     }
 
-    public function validateSignature($merchantCode, $secretKey)
+    public function validateSignature($merchantCode, $apiKey)
     {
         if (empty($this->signature)) {
             return false;
@@ -80,13 +81,16 @@ class Duitku_Notification
             $merchantCode .
                 $this->amount .
                 $this->merchantOrderId .
-                $secretKey
+                $apiKey
         );
 
+        if (!hash_equals($expectedSignature, $this->signature)) {
+            Helper::saveToLog("duitku.log", "WARNING: Signature validation failed");
+        }
         return hash_equals($expectedSignature, $this->signature);
     }
 
-    private function validateRequiredFields()
+    public function validateFields()
     {
         $required = ['resultCode', 'merchantOrderId', 'reference'];
 
@@ -100,21 +104,20 @@ class Duitku_Notification
     public function toArray()
     {
         return [
-            'resultCode' => $this->resultCode,
+            'merchantCode' => $this->merchantCode,
+            'amount' => $this->amount,
             'merchantOrderId' => $this->merchantOrderId,
-            'reference' => $this->reference,
+            'productDetail' => $this->productDetail,
+            'additionalParam' => $this->additionalParam,
+            'resultCode' => $this->resultCode,
             'paymentCode' => $this->paymentCode,
             'merchantUserId' => $this->merchantUserId,
-            'amount' => $this->amount,
-            'productDetail' => $this->productDetail,
+            'reference' => $this->reference,
             'signature' => $this->signature,
             'publisherOrderId' => $this->publisherOrderId,
+            'spUserHash' => $this->spUserHash,
             'settlementDate' => $this->settlementDate,
-            'vaNumber' => $this->vaNumber,
-            'sourceAccount' => $this->sourceAccount,
-            'additionalParam' => $this->additionalParam,
-            'transactionStatus' => $this->getTransactionStatus(),
-            'rawData' => $this->rawData
+            'issuerCode' => $this->issuerCode,
         ];
     }
 
