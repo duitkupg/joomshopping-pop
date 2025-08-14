@@ -47,11 +47,10 @@ class pm_duitku extends PaymentRoot
                 return FALSE;
             }
 
-            Helper::saveToLog("duitku.log", "INFO: Callback Body: " . $notification->toArray());
-
             if ($order) {
                 if ($notification->isSuccess()) {
                     Helper::saveToLog("duitku.log", "INFO: Payment SUCCESS for order ID: " . $order->order_id);
+                    Helper::saveToLog("duitku_callback.log", "INFO: Callback Body: " . $notification->toArray());
                     return array(1, 'Payment Successful', $notification->reference);
                 } elseif ($notification->isFailed()) {
                     Helper::saveToLog("duitku.log", "WARNING: Payment FAILED for order ID: " . $order->order_id . " - Code: " . $notification->resultCode);
