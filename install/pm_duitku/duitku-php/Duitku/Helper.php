@@ -109,7 +109,7 @@ class DuitkuHelper
         $baseUrl = $scheme . $host . $basePath;
 
         $environment = isset($pmconfigs['environment']) ? $pmconfigs['environment'] : 'sandbox';
-        Helper::saveToLog("duitku.log", "INFO: Base URL: " . $baseUrl . " (Environment: " . $environment . ")");
+        Helper::saveToLog("duitku.log", "INFO: Base URL: " . $baseUrl . " ($environment)");
         return $baseUrl;
     }
 

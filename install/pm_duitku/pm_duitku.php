@@ -50,7 +50,7 @@ class pm_duitku extends PaymentRoot
             if ($order) {
                 if ($notification->isSuccess()) {
                     Helper::saveToLog("duitku.log", "INFO: Payment SUCCESS for order ID: " . $order->order_id);
-                    Helper::saveToLog("duitku_callback.log", "INFO: Callback Body: " . $notification->toArray());
+                    Helper::saveToLog("duitku_callback.log", "INFO: Callback Body: " . print_r($notification->toArray(), true));
                     return array(1, 'Payment Successful', $notification->reference);
                 } elseif ($notification->isFailed()) {
                     Helper::saveToLog("duitku.log", "WARNING: Payment FAILED for order ID: " . $order->order_id . " - Code: " . $notification->resultCode);
@@ -93,11 +93,7 @@ class pm_duitku extends PaymentRoot
             $headers = DuitkuHeader::generate($pmconfigs['merchantCode'], $pmconfigs['apiKey']);
             $apiUrl = DuitkuConfig::getUrl($pmconfigs['environment']);
             
-            if ($pmconfigs['environment'] === 'sandbox') {
-                Helper::saveToLog("duitku.log", "INFO: REQUEST PARAMETERS (Sandbox)");
-            } else {
-                Helper::saveToLog("duitku.log", "INFO: REQUEST PARAMETERS");
-            }
+            Helper::saveToLog("duitku.log", "INFO: REQUEST PARAMETERS");
             Helper::saveToLog("duitku.log", "INFO: Request Headers: " . print_r($headers, true));
             Helper::saveToLog("duitku.log", "INFO: Request Body: " . print_r($params, true));
             Helper::saveToLog("duitku.log", "INFO: Sending request to Duitku POP API...");
