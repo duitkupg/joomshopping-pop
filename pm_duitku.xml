@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" method="upgrade" group="jshoppingpayment">
+<extension type="plugin" method="upgrade" group="payment">
     <name>Duitku Payment Gateway for JoomShopping</name>
     <version>1.0.0</version>
     <creationDate>July 2025</creationDate>
