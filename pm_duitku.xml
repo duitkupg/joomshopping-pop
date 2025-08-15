@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.0" type="file" method="upgrade">
+<extension type="plugin" method="upgrade" group="jshoppingpayment">
     <name>Duitku Payment Gateway for JoomShopping</name>
     <version>1.0.0</version>
     <creationDate>July 2025</creationDate>
-    <author>Kharisma Catur Mandala</author>
+    <author>PT. Kharisma Catur Mandala</author>
     <authorEmail>support@duitku.com</authorEmail>
     <authorUrl>https://duitku.com</authorUrl>
-    <copyright>Copyright (C) 2025. Kharisma Catur Mandala Inc. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2025. PT. Kharisma Catur Mandala Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
     <description>Duitku Payment Gateway integration for JoomShopping with automatic installation.</description>
 
-    <scriptfile>install.php</scriptfile>
-    <fileset>
-        <files>
-            <folder>install</folder>
-        </files>
-    </fileset>
-    
+    <files>
+        <filename plugin="duitku">install.php</filename>
+        <folder>install</folder>
+    </files>    
 </extension>
