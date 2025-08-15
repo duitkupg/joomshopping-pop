@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.0" type="plugin" group="system" method="upgrade">
-    <name>Duitku Payment Plugin for JoomShopping</name>
+<extension version="1.0" type="file" method="upgrade">
+    <name>Duitku Payment Gateway for JoomShopping</name>
     <version>1.0.0</version>
     <creationDate>July 2025</creationDate>
     <author>Kharisma Catur Mandala</author>
@@ -8,26 +8,13 @@
     <authorUrl>https://duitku.com</authorUrl>
     <copyright>Copyright (C) 2025. Kharisma Catur Mandala Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
-    <description>Duitku Payment Gateway integration for JoomShopping. Automatically creates payment method during installation.</description>
+    <description>Duitku Payment Gateway integration for JoomShopping with automatic installation.</description>
 
-    <dependencies>
-        <dependency type="platform" name="joomla" operator=">=" version="5.0"/>
-    </dependencies>
-    
-    <files>
-        <filename plugin="duitku">duitku.php</filename>
-        <filename>pm_duitku.php</filename>
-        <filename>adminparamsform.php</filename>
-        <filename>callback.php</filename>
-        <filename>paymentform.php</filename>
-        <folder>duitku-php</folder>
-    </files>
-    
     <scriptfile>install.php</scriptfile>
-    <!-- <updateservers>
-        <server type="extension" priority="1" name="Duitku Payment Plugin Updates">
-            <![CDATA[https://updates.duitku.com/joomshopping/pm_duitku.xml]]>
-        </server>
-    </updateservers> -->
-
+    <fileset>
+        <files>
+            <folder>install</folder>
+        </files>
+    </fileset>
+    
 </extension>

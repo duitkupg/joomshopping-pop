@@ -29,20 +29,11 @@ defined('_JEXEC') or die('Restricted access');
           <?php echo 'Environment'; ?>
         </td>
         <td>
-          <select name="pm_params[environment]" id="environment" class="inputbox custom-select">
+          <select name="pm_params[environment]" class="inputbox custom-select">
             <option value="sandbox" <?php if (isset($params['environment']) && $params['environment'] == 'sandbox') echo "selected";
-                                    elseif (!isset($params['environment'])) echo "selected"; ?>>Sandbox (Testing)</option>
-            <option value="production" <?php if (isset($params['environment']) && $params['environment'] == 'production') echo "selected"; ?>>Production (Live)</option>
+                                    elseif (!isset($params['environment'])) echo "selected"; ?>>Sandbox</option>
+            <option value="production" <?php if (isset($params['environment']) && $params['environment'] == 'production') echo "selected"; ?>>Production</option>
           </select>
-        </td>
-      </tr>
-      <tr id="devUrlRow" style="<?php echo (!isset($params['environment']) || $params['environment'] == 'sandbox') ? '' : 'display:none;'; ?>">
-        <td class="key">
-          <?php echo 'Development URL'; ?>
-        </td>
-        <td>
-          <input type="text" class="inputbox form-control" name="pm_params[devUrl]" id="devUrl" size="50" value="<?php echo htmlspecialchars($params['devUrl']); ?>" placeholder="https://abc123.ngrok.io" />
-          <br><small>Your ngrok or tunnel URL for local development (e.g., https://abc123.ngrok.io) - no trailing slash</small>
         </td>
       </tr>
       <tr>
@@ -69,24 +60,3 @@ defined('_JEXEC') or die('Restricted access');
   </fieldset>
 </div>
 <div class="clr"></div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const environmentSelect = document.getElementById('environment');
-    const devUrlRow = document.getElementById('devUrlRow');
-
-    if (environmentSelect && devUrlRow) {
-      // Function to toggle development URL visibility
-      function toggleDevUrl() {
-        const isProduction = environmentSelect.value === 'production';
-        devUrlRow.style.display = isProduction ? 'none' : '';
-      }
-
-      // Set initial state
-      toggleDevUrl();
-
-      // Listen for changes
-      environmentSelect.addEventListener('change', toggleDevUrl);
-    }
-  });
-</script>

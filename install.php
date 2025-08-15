@@ -1,104 +1,77 @@
 <?php
-
-/**
- * Duitku Payment Plugin Installer Script
- * 
- * This script handles the installation of the Duitku payment plugin for JShopping.
- * It copies necessary files and creates the payment method entry in the database.
- * 
- * @package    Duitku Payment Plugin
- * @author     Duitku Payment Gateway
- * @version    1.0.0
- * @since      1.0.0
- */
-
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 
-/**
- * Duitku Plugin Installer Script Class
- * 
- * Handles the installation process including file copying and database setup
- */
-class PlgSystemDuitkuInstallerScript
+function my_copy_all($from, $to, $rewrite = true)
 {
-    /**
-     * Install method called during plugin installation
-     * 
-     * @param object $parent The installer parent object
-     * @return bool True on success, false on failure
-     */
-    public function install($parent)
-    {
-        $app = Factory::getApplication();
+    if (is_dir($from)) {
+        if (!file_exists($to)) {
+            @mkdir($to, 0755, true);
+        }
+        $d = dir($from);
+        while (false !== ($entry = $d->read())) {
+            if ($entry == "." || $entry == "..") continue;
+            my_copy_all("$from/$entry", "$to/$entry", $rewrite);
+        }
+        $d->close();
+    } else {
+        if (!file_exists($to) || $rewrite) {
+            copy($from, $to);
+        }
+    }
+}
 
+$app = Factory::getApplication();
+$currentDir = dirname(__FILE__);
+$old_dir = $currentDir . '/install/pm_duitku/';
+$new_dir = $_SERVER['DOCUMENT_ROOT'] . '/components/com_jshopping/payments/pm_duitku/';
+
+if (is_dir($old_dir)) {
+    my_copy_all($old_dir, $new_dir, false);
+    if (is_dir($new_dir)) {
         try {
-            // Copy payment files to JoomShopping directory
-            $sourceDir = $parent->getParent()->getPath('source');
-            $targetDir = JPATH_ROOT . '/components/com_jshopping/payments/pm_duitku';
+            $paymentTable = JSFactory::getTable('paymentMethod');
+            $paymentTable->loadFromClass('pm_duitku'); // IGNORE (Red underline is linter error)
+            if ($paymentTable->payment_id) {
+                $app->enqueueMessage('Duitku payment method already exists!', 'warning');
+            } else {
+                $paymentTable->payment_code = 'duitku';
+                $paymentTable->payment_class = 'pm_duitku';
+                $paymentTable->scriptname = 'pm_duitku';
+                $paymentTable->payment_publish = 0;
+                $paymentTable->payment_ordering = 1;
+                $paymentTable->payment_type = 2;
+                $paymentTable->price = 0.00;
+                $paymentTable->price_type = 1;
+                $paymentTable->tax_id = 1;
+                $paymentTable->show_descr_in_email = 0;
+                $paymentTable->{'name_en-GB'} = 'Duitku';
+                $paymentTable->{'name_de-DE'} = 'Duitku';
 
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
+                if ($paymentTable->store()) {
+                    $configs = [
+                        'merchantCode' => '',
+                        'apiKey' => '',
+                        'environment' => 'sandbox',
+                        'transaction_end_status' => '6',
+                        'transaction_failed_status' => '1'
+                    ];
 
-            $files = ['pm_duitku.php', 'adminparamsform.php', 'callback.php', 'paymentform.php'];
-
-            foreach ($files as $file) {
-                if (file_exists($sourceDir . '/' . $file)) {
-                    copy($sourceDir . '/' . $file, $targetDir . '/' . $file);
+                    $paymentTable->setConfigs($configs); // IGNORE (Red underline is linter error)
+                    $paymentTable->store();
+                    $app->enqueueMessage('Duitku auto-install success.', 'success');
+                } else {
+                    $app->enqueueMessage('Duitku auto-install error!', 'error');
                 }
             }
-
-            // Copy duitku-php folder
-            $this->copyDirectory($sourceDir . '/duitku-php', $targetDir . '/duitku-php');
-
-            // Insert payment method into database (SQL in XML doesn't work)
-            $db = Factory::getDbo();
-            $query = "INSERT INTO `#__jshopping_payment_method` 
-                (`payment_code`, `payment_class`, `scriptname`, `payment_publish`, `payment_ordering`, `payment_type`, `price`, `price_type`, `tax_id`, `show_descr_in_email`, `name_en-GB`, `name_de-DE`) 
-                VALUES 
-                ('DUITKU', 'pm_duitku', 'pm_duitku', 0, 0, 2, 0.00, 1, 1, 0, 'Duitku', 'Duitku')";
-
-            $db->setQuery($query);
-            $db->execute();
-
-            $app->enqueueMessage('Duitku payment files copied and database updated!', 'success');
-            return true;
         } catch (Exception $e) {
-            $app->enqueueMessage('Installation error: ' . $e->getMessage(), 'error');
-            return false;
+            $app->enqueueMessage('Database error: ' . $e->getMessage(), 'error');
         }
+    } else {
+        $app->enqueueMessage('Copy operation failed - target directory not created!', 'error');
     }
-
-    /**
-     * Recursively copy a directory and its contents
-     * 
-     * @param string $source Source directory path
-     * @param string $destination Destination directory path
-     * @return bool True on success, false on failure
-     */
-    private function copyDirectory($source, $destination)
-    {
-        if (!is_dir($source)) return false;
-
-        if (!is_dir($destination)) {
-            mkdir($destination, 0755, true);
-        }
-
-        $files = array_diff(scandir($source), array('.', '..'));
-
-        foreach ($files as $file) {
-            $sourcePath = $source . '/' . $file;
-            $destPath = $destination . '/' . $file;
-
-            if (is_dir($sourcePath)) {
-                $this->copyDirectory($sourcePath, $destPath);
-            } else {
-                copy($sourcePath, $destPath);
-            }
-        }
-
-        return true;
-    }
+} else {
+    $app->enqueueMessage('Source directory does not exist: ' . $old_dir, 'error');
 }

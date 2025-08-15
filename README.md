@@ -6,15 +6,14 @@ A payment gateway integration for JoomShopping that enables secure payments thro
 
 - Secure payment processing through Duitku POP API
 - Multiple payment methods support (Credit Card, QRIS, Paylater, E-money, VA, etc.)
-- Real-time transaction status updates
 - Comprehensive logging for debugging
 - Easy configuration through JoomShopping admin panel
 - Production and sandbox environment support
 
-## Requirements
+## Tested on
 
 - Joomla 5.x
-- PHP 5.2.1 or higher
+- PHP 8.2 or higher
 
 ## Installation
 
@@ -22,6 +21,7 @@ A payment gateway integration for JoomShopping that enables secure payments thro
 2. Go to **Components > JoomShopping > Install & Update** in your Joomla admin
 3. Choose "Upload Package File"
 4. Select the downloaded ZIP file and install
+5. The installation process will automatically to create the necessary database tables and configuration files.
 
 ## Configuration
 
@@ -32,8 +32,7 @@ After installation, configure the plugin:
 3. Configure the required settings:
    - **Merchant Code**: Your Duitku merchant code
    - **API Key**: Your Duitku API key
-   - **Environment**: Choose Sandbox (testing) or Production (live)
-   - **Development URL**: (Optional) Your ngrok/tunnel URL for local development
+   - **Environment**: Choose Sandbox or Production
 
 ## Supported Payment Methods
 
@@ -60,14 +59,14 @@ For a complete list of supported payment methods, refer to the [Duitku POP API d
   - Check `duitku.log` for callback logs
 
 - **Payment amount issues?**
+
   - Check `duitku.log` for calculation details
   - Verify order totals in JoomShopping
 
 ### Logging
 
-All plugin activity is logged to `components/com_jshopping/log/duitku.log` with information about:
+To access log file, navigate to `{root}/administrator/index.php?option=com_jshopping&controller=logs` since it doesn't support interface (in Joomla 5.3.2). Log file contains information about:
 
-- Payment processing steps
 - API communication
 - Callback handling
 - Error conditions
